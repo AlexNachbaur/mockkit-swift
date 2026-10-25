@@ -1,0 +1,145 @@
+import MockCore
+
+/// The normalized internal model an OpenAPI 3.0/3.1 document is ingested into. Both versions
+/// reduce to this one shape so the rest of the engine never cares which dialect it came from.
+struct RESTSpec: Sendable {
+    /// Named schemas from `components.schemas`.
+    var schemas: [String: SchemaNode] = [:]
+    /// Schema-level `example` values, used to seed state when no explicit seed data exists.
+    var schemaExamples: [String: MockValue] = [:]
+    /// Named schemas that are themselves nullable (3.1 `type: [T, "null"]` or a `oneOf` with a
+    /// null variant), so `$ref`s to them accept explicit nulls.
+    var nullableSchemas: Set<String> = []
+    /// Every operation under `paths`.
+    var operations: [SpecOperation] = []
+
+    /// The named schema, or `nil`.
+    func schema(named name: String) -> SchemaNode? {
+        schemas[name]
+    }
+
+    /// The properties of a named object schema, or `nil` when the name is unknown or not an
+    /// object.
+    func objectProperties(of name: String) -> [String: SchemaNode.Property]? {
+        guard case .object(let properties, _, _) = schemas[name] else { return nil }
+        return properties
+    }
+
+    /// Follows a named schema through pure alias hops (`A: {$ref: B}`) to the schema that
+    /// actually defines a shape. Alias cycles are rejected at load, so this terminates.
+    func aliasTarget(of name: String) -> (name: String, node: SchemaNode)? {
+        var current = name
+        while let node = schemas[current] {
+            guard case .reference(let next) = node else { return (current, node) }
+            current = next
+        }
+        return nil
+    }
+}
+
+/// A normalized schema shape.
+indirect enum SchemaNode: Sendable, Hashable {
+    /// A string, optionally with a `format` hint and/or an `enum` member list.
+    case string(format: String?, enumValues: [String]?)
+    /// An integer.
+    case integer
+    /// A floating-point number.
+    case number
+    /// A boolean.
+    case boolean
+    /// An array of a single element shape.
+    case array(of: SchemaNode)
+    /// An object with named properties. `additional` is the shape of keys beyond `properties`:
+    /// `nil` when the object is closed (unknown keys are rejected, which is what catches seed
+    /// and request typos), `.any` for a free-form object, or the declared
+    /// `additionalProperties` schema.
+    case object(properties: [String: Property], required: Set<String>, additional: SchemaNode?)
+    /// A `$ref` to a named schema in `components.schemas`.
+    case reference(String)
+    /// A `oneOf`/`anyOf` union of named schemas; values in this position need qualified
+    /// `Schema:id` references so the concrete type is known.
+    case oneOf([String])
+    /// An untyped/unconstrained position; values pass through as authored.
+    case any
+
+    /// One property of an object schema.
+    struct Property: Sendable, Hashable {
+        var node: SchemaNode
+        var nullable: Bool
+        /// `readOnly: true` — the server sets it, so a request body may omit it even when the
+        /// schema lists it as `required` (OpenAPI 3.0 §4.7.24.2). Generated specs mark `id` and
+        /// `createdAt` this way as a matter of course.
+        var readOnly = false
+    }
+
+    /// A short human-readable description for diagnostics.
+    var typeDescription: String {
+        switch self {
+        case .string(_, let enumValues):
+            return enumValues == nil ? "string" : "enum"
+        case .integer: return "integer"
+        case .number: return "number"
+        case .boolean: return "boolean"
+        case .array: return "array"
+        case .object: return "object"
+        case .reference(let name): return name
+        case .oneOf(let names): return "one of \(names.joined(separator: "/"))"
+        case .any: return "any"
+        }
+    }
+}
+
+/// One `paths` operation, normalized.
+struct SpecOperation: Sendable {
+    var method: String
+    var pattern: RoutePattern
+    /// Query/path/header parameters declared on the operation (path-level ones merged in).
+    var parameters: [SpecParameter]
+    /// The `application/json` request body schema, when declared.
+    var requestBody: SchemaNode?
+    var requestBodyRequired: Bool
+    /// The success status served by the auto-wired handler (the lowest declared 2xx, else 200).
+    var successStatus: Int
+    /// The success response's `application/json` schema, when declared.
+    var responseSchema: SchemaNode?
+    /// The success response's `example`, when present; it wins over schema synthesis.
+    var responseExample: MockValue?
+}
+
+/// One declared operation parameter.
+struct SpecParameter: Sendable {
+    var name: String
+    /// `"path"`, `"query"`, or `"header"` (cookie parameters are accepted but not modeled).
+    var location: String
+    var required: Bool
+
+    /// What makes two declarations the same parameter: OpenAPI's (`name`, `in`) pair, with
+    /// header names compared case-insensitively. An operation's parameter replaces the path
+    /// item's with the same key.
+    var overrideKey: String {
+        "\(location):\(location == "header" ? name.lowercased() : name)"
+    }
+}
+
+/// A resource collection: what wires records in the store to CRUD routes.
+struct ResourceModel: Sendable {
+    var name: String
+    var schema: String
+    var basePath: String
+    var idField: String
+    /// When the spec's list response is an envelope (`{data: [Item], total: …}`), how to
+    /// synthesize it: the array property's name and the sibling properties.
+    var listEnvelope: EnvelopeModel?
+    /// The path-parameter name of the item route (`/users/{userId}` → `"userId"`); CRUD
+    /// handlers read the id from it.
+    var itemParamName: String = "id"
+    /// Whether this resource was inferred from the spec (inferred collections only get the
+    /// operations the spec declares; explicit ones get the full conventional set).
+    var inferred: Bool = false
+}
+
+/// A detected list-response envelope.
+struct EnvelopeModel: Sendable {
+    var itemsProperty: String
+    var extraProperties: [String: SchemaNode.Property]
+}
