@@ -14,7 +14,7 @@ never expose it to non-loopback networks.
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/AlexNachbaur/mockkit-swift.git", from: "1.0.0")
+    .package(url: "https://github.com/AlexNachbaur/mockkit-swift.git", from: "0.6.0")
 ],
 // in the UI/integration test target only:
 .testTarget(

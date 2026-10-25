@@ -104,7 +104,7 @@ protocol products brings it in:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/AlexNachbaur/mockkit-swift.git", from: "1.0.0")
+    .package(url: "https://github.com/AlexNachbaur/mockkit-swift.git", from: "0.6.0")
 ],
 targets: [
     .target(name: "MyMockExtension", dependencies: [

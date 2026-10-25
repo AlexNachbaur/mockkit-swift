@@ -8,7 +8,7 @@
 > Both fill unseeded fields with deterministic generated data and can share one localhost port
 > and one state store through the MockCore platform.
 
-Swift 6.3+, one SPM package (`https://github.com/AlexNachbaur/mockkit-swift.git`, from 1.0.0)
+Swift 6.3+, one SPM package (`https://github.com/AlexNachbaur/mockkit-swift.git`, from 0.6.0)
 with six library products: `MockQL` / `MockQLCore` (GraphQL server / portable engine),
 `MockREST` / `MockRESTCore` (REST server / portable engine), and `MockCore` /
 `MockCoreTransport` (the platform, for writing a new protocol extension). The `…Core` engines

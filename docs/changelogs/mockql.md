@@ -1,15 +1,15 @@
-# MockQL changelog (through 1.0.0)
+# MockQL changelog (through 0.6.0)
 
 The history of mockql-swift, MockQL's own repository until it became part of MockKit. From
-1.0.0 on, every MockKit product is recorded in the root [CHANGELOG.md](../../CHANGELOG.md).
-Releases before 1.0.0 are tagged `mockql-<version>`.
+0.6.0 on, every MockKit product is recorded in the root [CHANGELOG.md](../../CHANGELOG.md).
+Releases before 0.6.0 are tagged `mockql-<version>`.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2026-10-25
+## [0.6.0] - 2026-10-25
 
-Released as part of MockKit 1.0.0: everything MockQL gained after 0.5.0.
+Released as part of MockKit 0.6.0: everything MockQL gained after 0.5.0.
 
 Fixes from the October 2026 audit (finding ids `MQ-…` in the workspace `AUDIT.md`). Several are
 **behaviour changes**: MockQL now rejects things it used to accept in silence. Each one is a case
@@ -341,7 +341,7 @@ test passes against the mock and the feature fails in production.
   (`MockQLCore` portable engine + `MockQL` SwiftNIO transport) with Yams and SwiftNIO
   dependencies declared.
 
-[1.0.0]: https://github.com/AlexNachbaur/mockkit-swift/compare/mockql-0.5.0...1.0.0
+[0.6.0]: https://github.com/AlexNachbaur/mockkit-swift/compare/mockql-0.5.0...0.6.0
 [0.5.0]: https://github.com/AlexNachbaur/mockkit-swift/compare/mockql-0.4.1...mockql-0.5.0
 [0.4.1]: https://github.com/AlexNachbaur/mockkit-swift/compare/mockql-0.4.0...mockql-0.4.1
 [0.4.0]: https://github.com/AlexNachbaur/mockkit-swift/compare/mockql-0.3.0...mockql-0.4.0

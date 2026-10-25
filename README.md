@@ -29,7 +29,7 @@ a test-time tool and does not belong in your app:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/AlexNachbaur/mockkit-swift.git", from: "1.0.0")
+    .package(url: "https://github.com/AlexNachbaur/mockkit-swift.git", from: "0.6.0")
 ],
 targets: [
     .testTarget(name: "MyAppUITests", dependencies: [
@@ -124,7 +124,7 @@ app.launchEnvironment["API_BASE_URL"] = host.url.absoluteString   // one URL, bo
 - Formats and design: the [MockQL seed format](docs/mockql/design/seed-format.md), the
   [REST format](docs/mockrest/design/rest-format.md), and the
   [platform architecture](docs/architecture.md).
-- [CHANGELOG.md](CHANGELOG.md). Releases before 1.0.0, when the products were separate packages,
+- [CHANGELOG.md](CHANGELOG.md). Releases before 0.6.0, when the products were separate packages,
   are in [docs/changelogs/](docs/changelogs/).
 
 ### For AI coding agents

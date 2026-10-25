@@ -89,9 +89,10 @@ Beyond formatting, the project follows these rules:
   naming the product they affect.
 - Make sure `make check` passes locally (lint, build, tests, and the DocC build).
 
-MockKit follows semantic versioning, and every product shares one version: a breaking change
-to the public API of any product — MockCore's included, since MockQL and MockREST re-export it
-— needs a new major version and a changelog entry saying what to change.
+While MockKit is pre-1.0, the public API may change without deprecation cycles, but each
+breaking change is called out in the changelog with what to change. Every product shares one
+version, so a breaking change to any of them — MockCore's included, since MockQL and MockREST
+re-export it — means the next minor release, not a patch.
 
 ## Code review
 

@@ -1,15 +1,16 @@
-# MockCore changelog (through 1.0.0)
+# MockCore changelog (through 0.6.0)
 
 The history of mockcore-swift, the MockCore platform's own repository until it became part of
-MockKit. From 1.0.0 on, every MockKit product is recorded in the root
-[CHANGELOG.md](../../CHANGELOG.md). Releases before 1.0.0 are tagged `mockcore-<version>`.
+MockKit. From 0.6.0 on, every MockKit product is recorded in the root
+[CHANGELOG.md](../../CHANGELOG.md). Releases before 0.6.0 are tagged `mockcore-<version>`.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this
 project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2026-10-25
+## [0.6.0] - 2026-10-25
 
-Released as part of MockKit 1.0.0: everything MockCore gained after 0.1.2.
+Released as part of MockKit 0.6.0: everything MockCore gained after 0.1.2. (MockKit's version
+continues from mockql's 0.5.0, so MockCore goes from 0.1.2 to 0.6.0.)
 
 ### Fixed
 
@@ -147,7 +148,7 @@ Released as part of MockKit 1.0.0: everything MockCore gained after 0.1.2.
   - `MockRequest`/`MockResponse` — the neutral request/response pair, with query/header
     conveniences and JSON/text response builders.
 
-[1.0.0]: https://github.com/AlexNachbaur/mockkit-swift/compare/mockcore-0.1.2...1.0.0
+[0.6.0]: https://github.com/AlexNachbaur/mockkit-swift/compare/mockcore-0.1.2...0.6.0
 [0.1.2]: https://github.com/AlexNachbaur/mockkit-swift/compare/mockcore-0.1.1...mockcore-0.1.2
 [0.1.1]: https://github.com/AlexNachbaur/mockkit-swift/compare/mockcore-0.1.0...mockcore-0.1.1
 [0.1.0]: https://github.com/AlexNachbaur/mockkit-swift/tree/mockcore-0.1.0

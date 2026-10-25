@@ -1,15 +1,16 @@
-# MockREST changelog (through 1.0.0)
+# MockREST changelog (through 0.6.0)
 
 The history of mockrest-swift, MockREST's own repository until it became part of MockKit. From
-1.0.0 on, every MockKit product is recorded in the root [CHANGELOG.md](../../CHANGELOG.md).
-Releases before 1.0.0 are tagged `mockrest-<version>`.
+0.6.0 on, every MockKit product is recorded in the root [CHANGELOG.md](../../CHANGELOG.md).
+Releases before 0.6.0 are tagged `mockrest-<version>`.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this
 project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2026-10-25
+## [0.6.0] - 2026-10-25
 
-Released as part of MockKit 1.0.0: everything MockREST gained after 0.1.1.
+Released as part of MockKit 0.6.0: everything MockREST gained after 0.1.1. (MockKit's version
+continues from mockql's 0.5.0, so MockREST goes from 0.1.1 to 0.6.0.)
 
 ### Fixed
 
@@ -181,6 +182,6 @@ Released as part of MockKit 1.0.0: everything MockREST gained after 0.1.1.
   - `MockRESTEngine: MockService` + `MockRESTServer` facade; cross-protocol integration tests
     prove REST + GraphQL (MockQL) on one `MockHost` with one shared `StateStore`.
 
-[1.0.0]: https://github.com/AlexNachbaur/mockkit-swift/compare/mockrest-0.1.1...1.0.0
+[0.6.0]: https://github.com/AlexNachbaur/mockkit-swift/compare/mockrest-0.1.1...0.6.0
 [0.1.1]: https://github.com/AlexNachbaur/mockkit-swift/compare/mockrest-0.1.0...mockrest-0.1.1
 [0.1.0]: https://github.com/AlexNachbaur/mockkit-swift/tree/mockrest-0.1.0

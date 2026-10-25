@@ -1,7 +1,7 @@
 # MockCore Platform Architecture
 
 > Status: **Implemented — design record.** The platform described here was built. It first
-> shipped as three packages (mockcore-swift, mockql-swift, mockrest-swift); since MockKit 1.0.0
+> shipped as three packages (mockcore-swift, mockql-swift, mockrest-swift); since MockKit 0.6.0
 > it is one package whose products are those same modules, released under one version (§2).
 > This document is kept as the record of the design reasoning and has not been revised line by
 > line against the shipped code; **[OPEN]** markers are questions as they stood at design time,
@@ -14,7 +14,7 @@ Provide a family of native-Swift mocking servers for local UI-test automation th
 in-memory backend, one data-generation system, and one HTTP listener — so a single test process
 can present a virtual server that answers **both** REST and GraphQL (and, later, other
 protocols) on one port, while each protocol stays separately adoptable (at first as its own
-package; since 1.0.0 as its own product of one package).
+package; since 0.6.0 as its own product of one package).
 
 MockQL already exists and is pre-1.0. MockREST is new. Rather than duplicate MockQL's
 transport, state store, generators, and diagnostics, we extract the protocol-neutral parts into
@@ -66,7 +66,7 @@ that only share MockCore. Composition happens in the consumer's test target, whi
 whichever products it wants and registers them on one `MockHost`. (The cross-protocol
 integration tests link both, but that is a test target, never shipped.)
 
-The modules began as three packages and were merged at 1.0.0: they were released and changed
+The modules began as three packages and were merged at 0.6.0: they were released and changed
 together anyway, and a MockCore fix could not reach MockQL or MockREST without a release in
 between. One package keeps the module boundaries above and drops the version skew.
 
