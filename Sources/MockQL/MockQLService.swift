@@ -1,0 +1,159 @@
+import Foundation
+import MockCoreTransport
+import MockQLCore
+
+/// Serves a ``MockQLEngine`` over HTTP + the `graphql-transport-ws` WebSocket, with configurable
+/// transport paths.
+///
+/// By default both GraphQL over HTTP (`POST`/`GET`) and the subscription WebSocket upgrade are
+/// served on `/graphql`, which is what lets REST and GraphQL mocks share one port. Some servers
+/// split the two — queries and mutations on `/graphql`, subscriptions on a dedicated realtime path
+/// such as `/realtime/connect`. Pass `subscriptionPath` (and/or `httpPath`) to mirror that layout,
+/// so a client configured for the real server talks to the mock without special-casing it.
+///
+/// ```swift
+/// // Subscriptions on a dedicated path; queries/mutations still on /graphql:
+/// try await MockHost.start(host: host, port: port) {
+///     engine.service(subscriptionPath: "/realtime/connect")
+/// }
+/// ```
+public struct MockQLService: MockService {
+    /// The engine backing this service.
+    public let engine: MockQLEngine
+    /// Path serving GraphQL over HTTP (`POST` and `GET`). Defaults to `/graphql`.
+    public let httpPath: String
+    /// Path answering the `graphql-transport-ws` WebSocket upgrade. Defaults to `/graphql`.
+    public let subscriptionPath: String
+
+    /// Creates a service for `engine`. Both paths default to `/graphql`; override
+    /// `subscriptionPath` (and/or `httpPath`) to match a server that separates them. Paths are
+    /// normalized to a leading `/`, so `"graphql"` and `"/graphql"` are equivalent.
+    public init(engine: MockQLEngine, httpPath: String = "/graphql", subscriptionPath: String = "/graphql") {
+        self.engine = engine
+        self.httpPath = Self.normalizedPath(httpPath)
+        self.subscriptionPath = Self.normalizedPath(subscriptionPath)
+    }
+
+    /// Ensures a route path begins with `/`, since `MockRequest.path` always does — so a caller
+    /// may pass a bare segment (`"graphql"`) or a rooted path (`"/graphql"`) interchangeably.
+    static func normalizedPath(_ path: String) -> String {
+        path.hasPrefix("/") ? path : "/" + path
+    }
+
+    /// The service name shown in host diagnostics: `"MockQL"`.
+    public var name: String { "MockQL" }
+
+    /// Whether this service answers `request`: a `POST` or `GET` on exactly ``httpPath``.
+    public func claims(_ request: MockRequest) -> Bool {
+        request.path == httpPath && (request.method == "POST" || request.method == "GET")
+    }
+
+    /// Executes the GraphQL request carried by an HTTP request and returns the spec-format JSON
+    /// response.
+    ///
+    /// `POST` reads the standard JSON body. `GET` reads the `query`, `operationName`, and
+    /// `variables` query parameters and runs queries only: a mutation sent by `GET` is refused
+    /// with `405 Method Not Allowed` and is not executed. A body or query string that can't be
+    /// read as a GraphQL request is a `400`. GraphQL-level errors travel in the body with `200`.
+    public func respond(to request: MockRequest) async -> MockResponse {
+        let graphQLRequest: GraphQLRequest
+        switch request.method {
+        case "POST":
+            do {
+                graphQLRequest = try GraphQLRequest(jsonBody: request.body)
+            } catch let error as GraphQLError {
+                return Self.errorResponse(status: 400, message: error.message)
+            } catch {
+                return Self.errorResponse(status: 400, message: "Invalid request body")
+            }
+        default:
+            guard let parsed = HTTPHandler.requestFromQueryString(uri: request.uri) else {
+                return Self.errorResponse(status: 400, message: "GET \(httpPath) requires a 'query' parameter")
+            }
+            // A GET must be safe to repeat, prefetch, and cache, so GraphQL over HTTP reserves it
+            // for queries. Running a mutation here would let a link preview change server state.
+            guard engine.operationType(of: parsed) != .mutation else {
+                var response = Self.errorResponse(
+                    status: 405,
+                    message: "Mutations must be sent with POST; a GET request can only run a query"
+                )
+                // `Allow` lists what the *resource* supports (RFC 9110 §10.2.1): GET for
+                // queries as well as POST — it is this operation, not the method, that is refused.
+                response.headers.append((name: "Allow", value: "GET, POST"))
+                return response
+            }
+            graphQLRequest = parsed
+        }
+        let result = await engine.execute(graphQLRequest)
+        guard let payload = try? result.jsonData() else {
+            return Self.errorResponse(status: 500, message: "Failed to serialize response")
+        }
+        return .json(payload)
+    }
+
+    /// Offers the `graphql-transport-ws` upgrade for a request on exactly ``subscriptionPath``,
+    /// and declines (`nil`) for any other path.
+    public func webSocketUpgrade(for request: MockRequest) -> MockWebSocketUpgrade? {
+        // Exact match: the host consults this hook independently of claims(_:), so a prefix
+        // match would let MockQL preempt sibling services on paths like /graphqlx.
+        guard request.path == subscriptionPath else { return nil }
+        return MockWebSocketUpgrade(subprotocol: "graphql-transport-ws") {
+            GraphQLWSHandler(engine: engine)
+        }
+    }
+
+    /// Ends every active subscription stream. Called by the host as it stops.
+    public func shutdown() async {
+        await engine.shutdown()
+    }
+
+    /// A GraphQL-spec error payload (`{"errors": [...]}`) with the given HTTP status.
+    private static func errorResponse(status: Int, message: String) -> MockResponse {
+        let body =
+            (try? GraphQLResponse.requestFailed([GraphQLError(message: message)]).jsonData())
+            ?? Data(#"{"errors":[{"message":"internal error"}]}"#.utf8)
+        return .json(body, status: status)
+    }
+}
+
+/// Backwards-compatible conformance: a bare ``MockQLEngine`` is a `MockService` serving `/graphql`
+/// for both HTTP and the subscription WebSocket. Use ``MockQLEngine/service(httpPath:subscriptionPath:)``
+/// to serve them on different paths.
+extension MockQLEngine: MockService {
+    /// The service name shown in host diagnostics: `"MockQL"`.
+    public var name: String { asDefaultService.name }
+
+    /// Whether the engine answers `request`: a `POST` or `GET` on `/graphql`.
+    public func claims(_ request: MockRequest) -> Bool {
+        asDefaultService.claims(request)
+    }
+
+    /// Executes the GraphQL request carried by an HTTP request; see
+    /// ``MockQLService/respond(to:)`` for the status codes.
+    public func respond(to request: MockRequest) async -> MockResponse {
+        await asDefaultService.respond(to: request)
+    }
+
+    /// Offers the `graphql-transport-ws` upgrade for a request on `/graphql`.
+    public func webSocketUpgrade(for request: MockRequest) -> MockWebSocketUpgrade? {
+        asDefaultService.webSocketUpgrade(for: request)
+    }
+
+    // `shutdown()` — required by `MockService` — is already part of the engine's public API.
+
+    /// The engine served on the default `/graphql` paths.
+    private var asDefaultService: MockQLService { MockQLService(engine: self) }
+}
+
+extension MockQLEngine {
+    /// Wraps this engine as a ``MockQLService`` with configurable transport paths, for mounting on
+    /// a shared `MockHost` alongside other services.
+    ///
+    /// - Parameters:
+    ///   - httpPath: Path serving GraphQL over HTTP. Defaults to `/graphql`.
+    ///   - subscriptionPath: Path answering the `graphql-transport-ws` upgrade. Defaults to `/graphql`.
+    /// - Returns: A ``MockQLService`` serving this engine on the given paths.
+    public func service(httpPath: String = "/graphql", subscriptionPath: String = "/graphql") -> MockQLService {
+        MockQLService(engine: self, httpPath: httpPath, subscriptionPath: subscriptionPath)
+    }
+}
