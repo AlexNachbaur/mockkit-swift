@@ -4,6 +4,7 @@
 
 /// Package version information for MockREST.
 public struct MockRESTVersion {
-    /// The current version of the MockREST package.
-    public static let current = "0.1.1"
+    /// The current version of MockREST: the MockKit package version, since every product is
+    /// released together.
+    public static let current = MockCoreVersion.current
 }

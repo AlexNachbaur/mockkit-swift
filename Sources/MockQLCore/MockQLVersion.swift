@@ -1,5 +1,8 @@
+import MockCore
+
 /// Package version information for MockQL.
 public struct MockQLVersion {
-    /// The current version of the MockQL package.
-    public static let current = "0.5.0"
+    /// The current version of MockQL: the MockKit package version, since every product is
+    /// released together.
+    public static let current = MockCoreVersion.current
 }

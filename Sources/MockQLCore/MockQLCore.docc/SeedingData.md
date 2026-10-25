@@ -79,4 +79,4 @@ let engine = try await MockQLEngine(
 }
 ```
 
-The full format specification lives in the repository at `docs/design/seed-format.md`.
+The full format specification lives in the repository at `docs/mockql/design/seed-format.md`.

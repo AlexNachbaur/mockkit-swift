@@ -1,5 +1,8 @@
-/// Package version information for MockCore.
+/// Package version information for MockKit.
+///
+/// Every MockKit product is released together under one version, so this is the single
+/// constant: `MockQLVersion.current` and `MockRESTVersion.current` read it.
 public struct MockCoreVersion {
-    /// The current version of the MockCore package.
-    public static let current = "0.1.2"
+    /// The current version of the MockKit package.
+    public static let current = "1.0.0"
 }

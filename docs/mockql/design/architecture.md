@@ -28,7 +28,7 @@ Status: **accepted** · Last updated: 2026-10-05
 │   SubscriptionHub    subscriber registry + event fan-out         │
 │   MockQLEngine       schema + store + execute() / subscribe()    │
 ├──────────────────────────────────────────────────────────────────┤
-│ MockCore platform (mockcore-swift, shared with MockREST)         │
+│ MockCore platform (same package, shared with MockREST)           │
 │   MockCore           MockValue (aliased here as GraphQLValue),   │
 │                      StateStore, generators, seed decoding       │
 │                      (JSON + YAML via Yams), MockError           │

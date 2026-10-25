@@ -14,12 +14,12 @@ never expose it to non-loopback networks.
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/AlexNachbaur/mockrest-swift.git", from: "0.1.0")
+    .package(url: "https://github.com/AlexNachbaur/mockkit-swift.git", from: "1.0.0")
 ],
 // in the UI/integration test target only:
 .testTarget(
     name: "MyAppUITests",
-    dependencies: [.product(name: "MockREST", package: "mockrest-swift")]
+    dependencies: [.product(name: "MockREST", package: "mockkit-swift")]
 )
 ```
 
@@ -155,9 +155,10 @@ the port binds, and every error names a document path. Read the path first.
 
 ## Reference
 
-- [README](https://github.com/AlexNachbaur/mockrest-swift/blob/main/README.md) — overview,
-  scope, and known limitations.
-- [REST format specification](https://github.com/AlexNachbaur/mockrest-swift/blob/main/docs/design/rest-format.md)
+- [MockREST guide](https://github.com/AlexNachbaur/mockkit-swift/blob/main/docs/MockREST.md) —
+  overview, scope, and known limitations.
+- [REST format specification](https://github.com/AlexNachbaur/mockkit-swift/blob/main/docs/mockrest/design/rest-format.md)
   — spec ingestion, the seed format, and CRUD semantics in full.
-- Serving GraphQL from the same port: register `MockRESTEngine` and MockQL's `MockQLEngine` on
-  one `MockHost` with a shared `StateStore` — see "One port with GraphQL" in the README.
+- Serving GraphQL from the same port: add the `MockQL` product from the same package and
+  register `MockRESTEngine` and `MockQLEngine` on one `MockHost` with a shared `StateStore` —
+  see "One port with GraphQL" in the MockREST guide.

@@ -1,0 +1,36 @@
+# MockKit
+
+> Stateful mock servers in Swift for UI-test automation. MockQL serves GraphQL (a real SDL
+> schema or a Swift result-builder declaration, validated YAML/JSON seeds, mutations as Swift
+> closures over transactional state, graphql-transport-ws subscriptions). MockREST serves REST
+> from an OpenAPI 3.0/3.1 spec and/or a Swift endpoint DSL (auto-CRUD with
+> filtering/sorting/pagination, validated requests, fault injection, auth simulation, CORS).
+> Both fill unseeded fields with deterministic generated data and can share one localhost port
+> and one state store through the MockCore platform.
+
+Swift 6.3+, one SPM package (`https://github.com/AlexNachbaur/mockkit-swift.git`, from 1.0.0)
+with six library products: `MockQL` / `MockQLCore` (GraphQL server / portable engine),
+`MockREST` / `MockRESTCore` (REST server / portable engine), and `MockCore` /
+`MockCoreTransport` (the platform, for writing a new protocol extension). The `…Core` engines
+are NIO-free. Depend on the products you use; all share one version. Test-time tool only.
+
+## Integration
+
+- [MockQL agent integration guide](https://raw.githubusercontent.com/AlexNachbaur/mockkit-swift/main/docs/mockql/agents/integration-guide.md): self-contained instructions, canonical patterns, pitfalls, and an error→fix table
+- [MockREST agent integration guide](https://raw.githubusercontent.com/AlexNachbaur/mockkit-swift/main/docs/mockrest/agents/integration-guide.md): the canonical XCUITest pattern, rules that prevent the common failures, and an error→fix table
+- [README](https://raw.githubusercontent.com/AlexNachbaur/mockkit-swift/main/README.md): overview, installation, composing GraphQL and REST on one port
+
+## Reference
+
+- [MockQL guide](https://raw.githubusercontent.com/AlexNachbaur/mockkit-swift/main/docs/MockQL.md): schemas, seeding, mutations, subscriptions, requirements
+- [MockREST guide](https://raw.githubusercontent.com/AlexNachbaur/mockkit-swift/main/docs/MockREST.md): quick start, seeding, scope notes, known limitations
+- [MockCore guide](https://raw.githubusercontent.com/AlexNachbaur/mockkit-swift/main/docs/MockCore.md): the modules and writing your own protocol extension
+- [MockQL seed format specification](https://raw.githubusercontent.com/AlexNachbaur/mockkit-swift/main/docs/mockql/design/seed-format.md): the version/data/roots document format and validation rules
+- [REST format specification](https://raw.githubusercontent.com/AlexNachbaur/mockkit-swift/main/docs/mockrest/design/rest-format.md): spec ingestion, state model, seed format, CRUD semantics, settled decisions
+- [Platform architecture](https://raw.githubusercontent.com/AlexNachbaur/mockkit-swift/main/docs/architecture.md): module topology and the MockService seam
+- [API documentation](https://swiftpackageindex.com/AlexNachbaur/mockkit-swift/documentation): DocC for every module
+
+## Contributing
+
+- [AGENTS.md](https://raw.githubusercontent.com/AlexNachbaur/mockkit-swift/main/AGENTS.md): instructions for agents working in this repository
+- [CONTRIBUTING](https://raw.githubusercontent.com/AlexNachbaur/mockkit-swift/main/CONTRIBUTING.md): style rules, where code belongs, and PR process

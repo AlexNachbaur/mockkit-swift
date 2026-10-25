@@ -22,8 +22,12 @@ import Testing
         guard let text = try? String(contentsOf: changelog, encoding: .utf8) else { return }
         // Split on any newline: a Windows checkout has CRLF endings, and "\r\n" is one
         // Character, so splitting on "\n" would never split at all.
-        let released = text.split(whereSeparator: \.isNewline).lazy
-            .filter { $0.hasPrefix("## [") && !$0.hasPrefix("## [Unreleased]") }
+        let headings = text.split(whereSeparator: \.isNewline).filter { $0.hasPrefix("## [") }
+        // A release renames the section's contents, never the heading: the next change needs
+        // somewhere to be recorded.
+        #expect(headings.first == "## [Unreleased]", "CHANGELOG.md must open with an Unreleased section")
+        let released = headings.lazy
+            .filter { !$0.hasPrefix("## [Unreleased]") }
             .compactMap { $0.dropFirst(4).split(separator: "]").first.map(String.init) }
             .first
         #expect(try #require(released) == MockCoreVersion.current)
