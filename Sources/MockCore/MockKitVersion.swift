@@ -4,5 +4,5 @@
 /// MockQL and MockREST re-export MockCore.
 public struct MockKitVersion {
     /// The current version of the MockKit package.
-    public static let current = "0.6.0"
+    public static let current = "0.1.0"
 }

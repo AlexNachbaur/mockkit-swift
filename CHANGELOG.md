@@ -9,7 +9,7 @@ pre-1.0, a minor release may break the public API; each break is called out here
 
 ## [Unreleased]
 
-## [0.6.0] - 2026-10-25
+## [0.1.0] - 2026-10-25
 
 The first release of MockKit: native Swift mock servers for UI-test automation, as one package
 with six library products.
@@ -32,5 +32,5 @@ with six library products.
 - Every product builds and is tested on macOS, iOS, Linux, Windows and Android. The `…Core`
   engines are NIO-free, for in-process execution without a listener.
 
-[Unreleased]: https://github.com/AlexNachbaur/mockkit-swift/compare/0.6.0...HEAD
-[0.6.0]: https://github.com/AlexNachbaur/mockkit-swift/releases/tag/0.6.0
+[Unreleased]: https://github.com/AlexNachbaur/mockkit-swift/compare/0.1.0...HEAD
+[0.1.0]: https://github.com/AlexNachbaur/mockkit-swift/releases/tag/0.1.0

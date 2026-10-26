@@ -29,7 +29,7 @@ a test-time tool and does not belong in your app:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/AlexNachbaur/mockkit-swift.git", from: "0.6.0")
+    .package(url: "https://github.com/AlexNachbaur/mockkit-swift.git", from: "0.1.0")
 ],
 targets: [
     .testTarget(name: "MyAppUITests", dependencies: [
