@@ -2,8 +2,9 @@ import Testing
 
 @testable import MockRESTCore
 
-/// Regressions pinned from the 2026-07 repo audit.
-@Suite struct AuditRegressionTests {
+/// Edge cases in resource inference, nullability, aliases, fault ordering and schema examples,
+/// pinned so they stay fixed.
+@Suite struct RegressionTests {
     /// A spec mixing a real collection with singleton/RPC-shaped literal paths.
     private static let accountSpec = """
         openapi: 3.0.3
@@ -82,7 +83,7 @@ import Testing
         try await MockRESTEngine(spec: .yaml(Self.accountSpec), seed: .yaml(Self.accountSeed), serverSeed: 7)
     }
 
-    // MARK: - Resource inference (audit H1)
+    // MARK: - Resource inference
 
     @Test func literalSingletonAndRPCPathsAreNotCollections() throws {
         let spec = try SpecLoader.load(.yaml(Self.accountSpec))
@@ -105,7 +106,7 @@ import Testing
             RESTRequest(method: "POST", path: "/login", body: ["username": "avery", "password": "hunter2"]))
         #expect(valid.status == 200)
 
-        // The declared Login schema is enforced (audit M5a)…
+        // The declared Login schema is enforced…
         let wrongField = await engine.execute(
             RESTRequest(method: "POST", path: "/login", body: ["username": "avery", "pssword": "typo"]))
         #expect(wrongField.status == 422)
@@ -122,7 +123,7 @@ import Testing
         #expect(missingBody.status == 422)
     }
 
-    // MARK: - Nullability (audit M2)
+    // MARK: - Nullability
 
     @Test func oneOfNullVariantsAcceptExplicitNulls() async throws {
         let engine = try await MockRESTEngine(
@@ -276,7 +277,7 @@ import Testing
         #expect(dangling.body?["errors"][0]["message"].stringValue?.contains("u9") == true)
     }
 
-    // MARK: - Alias cycles (audit M1)
+    // MARK: - Alias cycles
 
     @Test func circularAliasChainsAreRejectedAtLoad() {
         let yaml = """
@@ -296,7 +297,7 @@ import Testing
         }
     }
 
-    // MARK: - Request-body aliases (audit M6)
+    // MARK: - Request-body aliases
 
     @Test func aliasChainedRequestBodiesStillEnforceRequired() async throws {
         let yaml = """
@@ -336,7 +337,7 @@ import Testing
         #expect(notAnObject.body?["errors"][0]["message"].stringValue?.contains("Expected an object") == true)
     }
 
-    // MARK: - Fault ordering (audit M3)
+    // MARK: - Fault ordering
 
     @Test func preflightsAndMissesDoNotConsumeInjectedFaults() async throws {
         let engine = try await accountEngine()
@@ -359,7 +360,7 @@ import Testing
         #expect(after.status == 200)
     }
 
-    // MARK: - Schema examples (audit L1)
+    // MARK: - Schema examples
 
     @Test func schemaExamplesWithIntegerIdsSeedLikeSeedsDo() async throws {
         let yaml = """

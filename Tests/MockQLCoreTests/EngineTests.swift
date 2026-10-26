@@ -386,8 +386,8 @@ private func makeShopEngine(
         #expect(response.data?["products"]["edges"].count == 0)
     }
 
-    /// The other end of the range: a cursor naming Int.max used to overflow `index + 1` and
-    /// crash the process (found by the review hub on mockql-swift#13).
+    /// The other end of the range: a cursor naming Int.max must not overflow `index + 1` and
+    /// crash the process.
     @Test func cursorAtTheEndOfIntsRangeYieldsAnEmptyPageInsteadOfCrashing() async throws {
         let engine = try await makeShopEngine()
         for cursor in ["cursor:\(Int.max)", "cursor:\(Int.min)"] {

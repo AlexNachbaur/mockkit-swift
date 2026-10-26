@@ -3,9 +3,9 @@ import Testing
 
 @testable import MockCore
 
-@Suite struct MockCoreVersionTests {
+@Suite struct MockKitVersionTests {
     @Test func versionIsSemanticVersionShaped() {
-        let components = MockCoreVersion.current.split(separator: ".")
+        let components = MockKitVersion.current.split(separator: ".")
         #expect(components.count == 3)
         #expect(components.allSatisfy { Int($0) != nil })
     }
@@ -30,6 +30,6 @@ import Testing
             .filter { !$0.hasPrefix("## [Unreleased]") }
             .compactMap { $0.dropFirst(4).split(separator: "]").first.map(String.init) }
             .first
-        #expect(try #require(released) == MockCoreVersion.current)
+        #expect(try #require(released) == MockKitVersion.current)
     }
 }

@@ -16,8 +16,7 @@ Resolution order for a field:
    such as `emails` all count): `email` gets emails, `phone` gets phone numbers, `url`/`link`
    get URLs, `firstName`/`lastName`/`name`/`nickname` get names, and date-like names
    (`…At`, `…Date`, or scalar types like `DateTime`) get ISO-8601 timestamps. A word that merely
-   contains a trigger (`updated`, `hourly`, `title`) does not match. (MockCore 0.1.2 matched by
-   substring; the word rules arrive with the next MockCore release.)
+   contains a trigger (`updated`, `hourly`, `title`) does not match.
 3. A type-appropriate default: UUIDs for `ID`, ranged ints/floats, booleans, sentences for
    `String`, a stable member for enums.
 

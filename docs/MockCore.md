@@ -130,8 +130,7 @@ targets: [
 - [API documentation](https://swiftpackageindex.com/AlexNachbaur/mockkit-swift/documentation/mockcore)
   (DocC) — the value model, state store, generators, and the hosting/extension seam.
 - [architecture.md](architecture.md) — the platform design: module topology, the
-  `MockService` seam, settled decisions. The history of how the platform was split out of
-  MockQL is in [mockrest/design/extraction-plan.md](mockrest/design/extraction-plan.md).
+  `MockService` seam, settled decisions.
 
 Contributing, security reports and the license are covered in MockKit's
 [README](../README.md#contributing).

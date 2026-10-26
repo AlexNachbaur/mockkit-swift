@@ -124,8 +124,7 @@ app.launchEnvironment["API_BASE_URL"] = host.url.absoluteString   // one URL, bo
 - Formats and design: the [MockQL seed format](docs/mockql/design/seed-format.md), the
   [REST format](docs/mockrest/design/rest-format.md), and the
   [platform architecture](docs/architecture.md).
-- [CHANGELOG.md](CHANGELOG.md). Releases before 0.6.0, when the products were separate packages,
-  are in [docs/changelogs/](docs/changelogs/).
+- [CHANGELOG.md](CHANGELOG.md).
 
 ### For AI coding agents
 

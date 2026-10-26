@@ -1,10 +1,9 @@
 # MockREST — Spec Ingestion, State & Endpoint Model
 
-> Status: **Implemented** (shipped in 0.1.0; this document describes the current behavior).
-> It began as the design draft; every question it raised was decided on 2026-07-12 and the
-> decisions are recorded in §9 — treat them as settled. Built on the platform described in
-> [architecture.md](../../architecture.md). What is deliberately not handled yet is listed
-> under "Known limitations" in the [MockREST guide](../../MockREST.md#known-limitations).
+> This document describes MockREST's current behavior. Its settled decisions are in §9. It is
+> built on the platform described in [architecture.md](../../architecture.md). What is
+> deliberately not handled yet is listed under "Known limitations" in the
+> [MockREST guide](../../MockREST.md#known-limitations).
 
 MockREST is the REST extension of the MockCore platform (`MockRESTCore` = portable engine,
 `MockREST` = the `MockService` + facade). It mocks a stateful REST backend for UI tests, defined
@@ -260,8 +259,6 @@ What v1 ships (§9.9) and what it leaves for later:
   parallels MockQL's TODO.
 
 ## 9. Decisions (settled)
-
-All items **decided with the project owner on 2026-07-12**:
 
 1. Swagger/OpenAPI 2.0 — ✅ **no** for v1 (convertible upstream).
 2. External/remote `$ref` — ✅ **unsupported with a clear error** for v1.

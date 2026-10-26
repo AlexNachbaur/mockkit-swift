@@ -57,3 +57,7 @@ let user = await store.record(type: "User", id: "u1")
 - ``MockError``
 - ``SourceLocation``
 - ``Suggestion``
+
+### Package
+
+- ``MockKitVersion``

@@ -1,8 +1,10 @@
 import MockQL
 import Testing
 
-@Test func coreModuleIsReExported() {
-    // MockQLVersion lives in MockQLCore; reaching it through `import MockQL` alone
-    // proves the re-export works.
-    #expect(!MockQLVersion.current.isEmpty)
+@Test func coreModulesAreReExported() {
+    // `GraphQLValue` lives in MockQLCore and `MockKitVersion` in MockCore; reaching both
+    // through `import MockQL` alone proves the re-export chain works.
+    let value: GraphQLValue = .null
+    #expect(value == .null)
+    #expect(!MockKitVersion.current.isEmpty)
 }

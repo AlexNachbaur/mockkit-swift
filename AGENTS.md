@@ -75,8 +75,8 @@ library targets, and stick to Foundation APIs that swift-corelibs-foundation als
 ### The package
 
 - **One package, one version.** Every product is released together under one tag and one
-  `CHANGELOG.md`. `MockCoreVersion.current` is the single version constant; `MockQLVersion`
-  and `MockRESTVersion` read it.
+  `CHANGELOG.md`, and `MockKitVersion.current` (in MockCore, re-exported everywhere) is the one
+  version constant.
 - **Toolchain/platforms**: Swift 6.3 (`swift-tools-version: 6.3`). `Package.swift` declares
   Apple minimums (macOS 14 / iOS 17) solely for concurrency availability; that does not limit
   Linux/Windows/Android support.
@@ -170,7 +170,7 @@ Platform architecture: [docs/architecture.md](docs/architecture.md). MockQL inte
   URLSession on other platforms has no WebSocket support.
 - Update `CHANGELOG.md` (Unreleased section, under the product it affects) for user-visible
   changes, and say *why*.
-- `MockCoreVersion.current` must equal the newest released heading in `CHANGELOG.md` (a test
+- `MockKitVersion.current` must equal the newest released heading in `CHANGELOG.md` (a test
   enforces it): bump both in the release commit, and leave a fresh `## [Unreleased]` heading.
 
 ## Important files
