@@ -31,8 +31,7 @@ struct Lexer {
     /// `split(separator: "\n")` never splits.
     ///
     /// The symptom is that a CRLF schema fails to parse at all — `Unexpected character` on the
-    /// first line break — which is what every Windows checkout produces by default. Found by
-    /// the Windows CI job the first time it ran.
+    /// first line break — which is what every Windows checkout produces by default.
     ///
     /// The work happens over `unicodeScalars` rather than `Character`s, and that is the whole
     /// point: at scalar level CR and LF are always two separate elements, so the clustering

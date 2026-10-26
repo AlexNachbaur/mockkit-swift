@@ -10,8 +10,8 @@ Current documents:
 - [seed-format.md](seed-format.md) — the v1 seed document specification (`version`/`data`/`roots`,
   schema-driven references, coercion, validation).
 
-Everything else has shipped, and is documented where its users look for it — in the DocC
-catalogs — rather than in a design document of its own:
+Everything else is documented where its users look for it — in the DocC catalogs — rather
+than in a design document of its own:
 
 | Area | Where it is documented |
 |---|---|
@@ -24,4 +24,4 @@ catalogs — rather than in a design document of its own:
 | Subscriptions | `Sources/MockQLCore/MockQLCore.docc/WorkingWithSubscriptions.md` |
 
 Add a document here when a decision needs its alternatives and reasoning recorded — not to
-restate how a shipped feature is used.
+restate how a feature is used.

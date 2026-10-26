@@ -1,0 +1,35 @@
+import Foundation
+import Testing
+
+@testable import MockCore
+
+@Suite struct MockKitVersionTests {
+    @Test func versionIsSemanticVersionShaped() {
+        let components = MockKitVersion.current.split(separator: ".")
+        #expect(components.count == 3)
+        #expect(components.allSatisfy { Int($0) != nil })
+    }
+
+    /// The constant is maintained by hand, and a release that forgets it ships a version that
+    /// misreports itself. Checked against the changelog, which every release already edits.
+    @Test func versionMatchesTheNewestReleasedChangelogEntry() throws {
+        let changelog = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .appendingPathComponent("CHANGELOG.md")
+        // The source tree is not present when the suite runs on a simulator or an emulator.
+        guard let text = try? String(contentsOf: changelog, encoding: .utf8) else { return }
+        // Split on any newline: a Windows checkout has CRLF endings, and "\r\n" is one
+        // Character, so splitting on "\n" would never split at all.
+        let headings = text.split(whereSeparator: \.isNewline).filter { $0.hasPrefix("## [") }
+        // A release renames the section's contents, never the heading: the next change needs
+        // somewhere to be recorded.
+        #expect(headings.first == "## [Unreleased]", "CHANGELOG.md must open with an Unreleased section")
+        let released = headings.lazy
+            .filter { !$0.hasPrefix("## [Unreleased]") }
+            .compactMap { $0.dropFirst(4).split(separator: "]").first.map(String.init) }
+            .first
+        #expect(try #require(released) == MockKitVersion.current)
+    }
+}

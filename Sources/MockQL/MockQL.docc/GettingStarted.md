@@ -8,18 +8,18 @@ In `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/AlexNachbaur/mockql-swift.git", from: "0.1.0")
+    .package(url: "https://github.com/AlexNachbaur/mockkit-swift.git", from: "0.1.0")
 ]
 ```
 
-Then add the `MockQL` product to your **test target** — MockQL is a test-time tool and does not
-belong in your app target:
+Then add MockKit's `MockQL` product to your **test target** — MockQL is a test-time tool and
+does not belong in your app target:
 
 ```swift
 .testTarget(
     name: "MyAppUITests",
     dependencies: [
-        .product(name: "MockQL", package: "mockql-swift")
+        .product(name: "MockQL", package: "mockkit-swift")
     ]
 )
 ```

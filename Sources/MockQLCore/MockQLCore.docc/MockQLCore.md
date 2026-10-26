@@ -101,7 +101,3 @@ let response = await engine.execute(GraphQLRequest(query: "{ greeting }"))
 - ``GraphQLError``
 - ``GraphQLPathSegment``
 - ``SourceLocation``
-
-### Package
-
-- ``MockQLVersion``

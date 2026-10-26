@@ -1,7 +1,5 @@
 # Seed Document Format (v1)
 
-Status: **accepted** · Last updated: 2026-07-12
-
 Seed documents bootstrap MockQL's in-memory state. They are plain YAML or JSON, loadable from a
 file, an inline string, or built with result builders (which produce the same model).
 
@@ -108,8 +106,8 @@ Follow GraphQL spec semantics:
 
 The entire document is validated against the schema at load time, before the server starts.
 Errors carry the source name plus a document path (`data.User[0].email`) and include "did you
-mean" suggestions where a near-miss exists. (YAML line/column positions are a planned
-improvement over document paths.) At minimum, these are load-time errors:
+mean" suggestions where a near-miss exists; YAML syntax errors also carry a line and column. At
+minimum, these are load-time errors:
 
 - unknown top-level key; missing/unsupported `version`
 - unknown type name under `data`; unknown field on a record; unknown root field

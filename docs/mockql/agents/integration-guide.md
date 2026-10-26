@@ -14,12 +14,12 @@ to non-loopback networks.
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/AlexNachbaur/mockql-swift.git", from: "0.1.0")
+    .package(url: "https://github.com/AlexNachbaur/mockkit-swift.git", from: "0.1.0")
 ],
 // in the UI/integration test target only:
 .testTarget(
     name: "MyAppUITests",
-    dependencies: [.product(name: "MockQL", package: "mockql-swift")]
+    dependencies: [.product(name: "MockQL", package: "mockkit-swift")]
 )
 ```
 
@@ -186,5 +186,5 @@ while await server.engine.activeSubscriptionCount() == 0 {
 3. Sanity-check by hand: `curl 'http://127.0.0.1:PORT/graphql?query={__typename}'` while paused
    at a breakpoint, or `GET /health`.
 
-Full documentation: <https://swiftpackageindex.com/AlexNachbaur/mockql-swift/documentation> ·
-Seed format spec: [docs/design/seed-format.md](../design/seed-format.md)
+Full documentation: <https://swiftpackageindex.com/AlexNachbaur/mockkit-swift/documentation/mockql> ·
+Seed format spec: [docs/mockql/design/seed-format.md](../design/seed-format.md)

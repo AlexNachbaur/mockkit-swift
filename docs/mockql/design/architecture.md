@@ -1,7 +1,5 @@
 # MockQL Architecture
 
-Status: **accepted** · Last updated: 2026-10-05
-
 ## Goals
 
 - Local, stateful GraphQL mocking for UI-test automation (XCUITest first).
@@ -28,7 +26,7 @@ Status: **accepted** · Last updated: 2026-10-05
 │   SubscriptionHub    subscriber registry + event fan-out         │
 │   MockQLEngine       schema + store + execute() / subscribe()    │
 ├──────────────────────────────────────────────────────────────────┤
-│ MockCore platform (mockcore-swift, shared with MockREST)         │
+│ MockCore platform (same package, shared with MockREST)           │
 │   MockCore           MockValue (aliased here as GraphQLValue),   │
 │                      StateStore, generators, seed decoding       │
 │                      (JSON + YAML via Yams), MockError           │
@@ -36,21 +34,20 @@ Status: **accepted** · Last updated: 2026-10-05
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-The value model, the state store, the generators, and seed *decoding* were extracted into the
-MockCore platform so that GraphQL and REST mocks can share one store on one port. `MockQLCore`
-re-exports `MockCore` and keeps the original spellings as type aliases (`GraphQLValue`,
-`MockQLError`), so `import MockQLCore` — or `import MockQL` — is still the only import a
-consumer needs. What stays here is everything GraphQL-specific: the language, the schema, seed
-*validation* against that schema, and execution.
+The value model, the state store, the generators, and seed *decoding* live in the MockCore
+platform, so that GraphQL and REST mocks can share one store on one port. `MockQLCore`
+re-exports `MockCore` and names its types for GraphQL (`GraphQLValue`, `MockQLError`), so
+`import MockQLCore` — or `import MockQL` — is the only import a consumer needs. Everything
+GraphQL-specific is here: the language, the schema, seed *validation* against that schema, and
+execution.
 
 Rules:
 
 - `MockQLCore` must never import NIO (or any Apple-only framework), and has no direct
-  third-party dependency: Yams reaches it only through MockCore, which owns YAML decoding. It is the portability boundary:
-  a host that cannot or does not want to bind a port can still `import MockQLCore` and execute
-  operations in-process. (This was originally motivated by Windows, which SwiftNIO was assumed
-  not to support; NIOPosix has since carried a Windows port and CI tests the full stack there,
-  so the boundary now earns its keep for in-process execution rather than for portability.)
+  third-party dependency: Yams reaches it only through MockCore, which owns YAML decoding. The
+  boundary is for in-process execution: a host that does not want to bind a port can
+  `import MockQLCore` and execute operations directly. (It is not needed for portability —
+  the full stack, SwiftNIO included, builds and is tested on every supported platform.)
 - `MockQL` re-exports `MockQLCore`, so `import MockQL` is the only import most consumers need.
 - The hand-written parser is a deliberate decision (over GraphQLSwift/GraphQL): diagnostics quality
   is a product feature, and it keeps NIO types out of the core.
@@ -61,7 +58,7 @@ Rules:
 |---|---|---|
 | Transport | SwiftNIO HTTP/1.1 + WebSocket, via MockCoreTransport's `MockHost` | Industry standard, cross-platform (macOS/iOS/Linux/Windows/Android); one host can serve several protocol mocks |
 | Subscriptions | `graphql-transport-ws` | What Apollo/urql/Relay speak natively |
-| YAML | Yams, inside MockCore | Standard Swift YAML; hand-rolling YAML is a maintenance trap. Not a direct dependency of this package |
+| YAML | Yams, inside MockCore | Standard Swift YAML; hand-rolling YAML is a maintenance trap. Not a direct dependency of MockQL's modules |
 | GraphQL parsing | Hand-written lexer/parser | Precise, friendly errors; no NIO leakage; portability |
 | State | Single actor-backed store | Serialized mutations, `Sendable`-safe reads |
 | Identity | `id` field per record (per-type key paths designed in for future `@key` support) | Matches Relay/Apollo normalized caches |
